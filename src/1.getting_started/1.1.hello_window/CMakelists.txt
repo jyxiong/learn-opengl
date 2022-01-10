@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(1.1.hello_window)
+
+add_executable(hello_window hello_window.cpp)
+target_link_libraries(hello_window PUBLIC 
+    ${GLAD_LIBRARY}
+    ${GLFW3_LIBRARY}
+    ${APPLE_LIBRARIES}
+)
+target_include_directories(hello_window PUBLIC
+    ${GLAD_INCLUDE_DIR}
+    ${GLFW3_INCLUDE_DIR}
+)

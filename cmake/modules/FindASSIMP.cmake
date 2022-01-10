@@ -1,32 +1,32 @@
-# - Try to find Assimp
-# Once done, this will define
+# locate the assimp library
+#
+# This module defines the following variables:
 #
 # ASSIMP_FOUND - system has Assimp
 # ASSIMP_INCLUDE_DIR - the Assimp include directories
-# ASSIMP_LIBRARIES - link these to use Assimp
-FIND_PATH( ASSIMP_INCLUDE_DIR assimp/mesh.h
-	/usr/include
-	/usr/local/include
-	/opt/local/include
-	${CMAKE_SOURCE_DIR}/includes
+# ASSIMP_LIBRARY - link these to use Assimp
+
+# search for include
+set(ASSIMP_HEADER_SEARCH_DIRS
+    ${CMAKE_SOURCE_DIR}/3rd_party/assimp/include
 )
-FIND_LIBRARY( ASSIMP_LIBRARY assimp
-	/usr/lib64
-	/usr/lib
-	/usr/local/lib
-	/opt/local/lib
-	${CMAKE_SOURCE_DIR}/lib
+find_path(ASSIMP_INCLUDE_DIR NAMES assimp/mesh.h
+    PATHS ${ASSIMP_HEADER_SEARCH_DIRS})
+# add assimp/config.h
+set(ASSIMP_INCLUDE_DIR
+    ${ASSIMP_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/3rd_party/assimp/build/include
 )
-IF(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY)
-	SET( ASSIMP_FOUND TRUE )
-	SET( ASSIMP_LIBRARIES ${ASSIMP_LIBRARY} )
-ENDIF(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY)
-IF(ASSIMP_FOUND)
-	IF(NOT ASSIMP_FIND_QUIETLY)
-	MESSAGE(STATUS "Found ASSIMP: ${ASSIMP_LIBRARY}")
-	ENDIF(NOT ASSIMP_FIND_QUIETLY)
-ELSE(ASSIMP_FOUND)
-	IF(ASSIMP_FIND_REQUIRED)
-	MESSAGE(FATAL_ERROR "Could not find libASSIMP")
-	ENDIF(ASSIMP_FIND_REQUIRED)
-ENDIF(ASSIMP_FOUND)
+
+# search for the library
+set(ASSIMP_LIB_SEARCH_DIRS
+    ${CMAKE_SOURCE_DIR}/3rd_party/assimp/build/bin
+)
+find_library(ASSIMP_LIBRARY NAMES assimp 
+    PATHS ${ASSIMP_LIB_SEARCH_DIRS})
+
+# set ASSIMP package
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(ASSIMP DEFAULT_MSG
+    ASSIMP_LIBRARY ASSIMP_INCLUDE_DIR
+)

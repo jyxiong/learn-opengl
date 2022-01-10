@@ -1,4 +1,4 @@
-# ignores following folders
-bin/
 build/
 .vscode
+
+.DS_Store
