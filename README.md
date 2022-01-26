@@ -1,4 +1,4 @@
-# LearnOpenGL
+# Learn OpenGL
 
 [LearnOpenGL](https://learnopengl.com/)
 

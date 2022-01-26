@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(1.1.hello_window)
+project(2.3.hello_triangle_exercise1)
 
 set(TARGET_NAME ${PREFIX_FOLDER}_${PROJECT_NAME})
-add_executable(${TARGET_NAME} hello_window.cpp)
+add_executable(${TARGET_NAME} hello_triangle_exercise1.cpp)
 target_link_libraries(${TARGET_NAME} PUBLIC
     ${GLAD_LIBRARY}
     ${GLFW3_LIBRARY}
