@@ -8,14 +8,14 @@
 
 # search for include
 set(GLAD_HEADER_SEARCH_DIRS
-    ${CMAKE_SOURCE_DIR}/3rd_party/glad/include
+    ${CMAKE_SOURCE_DIR}/3rdparty/glad/include
 )
 find_path(GLAD_INCLUDE_DIR NAMES glad/glad.h
     PATHS ${GLAD_HEADER_SEARCH_DIRS})
 
 # search for the library
 set(GLAD_LIB_SEARCH_DIRS
-    ${CMAKE_SOURCE_DIR}/3rd_party/glad/build
+    ${CMAKE_SOURCE_DIR}/3rdparty/glad/build
 )
 find_library(GLAD_LIBRARY NAMES glad 
     PATHS ${GLAD_LIB_SEARCH_DIRS})

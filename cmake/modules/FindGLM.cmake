@@ -7,7 +7,7 @@
 
 # search for include
 set(GLM_HEADER_SEARCH_DIRS
-    ${CMAKE_SOURCE_DIR}/3rd_party/glm
+    ${CMAKE_SOURCE_DIR}/3rdparty/glm
 )
 find_path(GLM_INCLUDE_DIR NAMES glm/glm.hpp
     PATHS ${GLM_HEADER_SEARCH_DIRS})

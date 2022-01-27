@@ -8,14 +8,14 @@
 
 # search for include
 set(ASSIMP_HEADER_SEARCH_DIRS
-    ${CMAKE_SOURCE_DIR}/3rd_party/assimp/include
+    ${CMAKE_SOURCE_DIR}/3rdparty/assimp/include
 )
 find_path(ASSIMP_INCLUDE_DIR NAMES assimp/mesh.h
     PATHS ${ASSIMP_HEADER_SEARCH_DIRS})
 # add assimp/config.h
 set(ASSIMP_INCLUDE_DIR
     ${ASSIMP_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/3rd_party/assimp/build/include
+    ${CMAKE_SOURCE_DIR}/3rdparty/assimp/build/include
 )
 
 # search for the library

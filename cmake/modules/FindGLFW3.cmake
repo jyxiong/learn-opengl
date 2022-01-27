@@ -8,14 +8,14 @@
 
 # search for include
 set(GLFW3_HEADER_SEARCH_DIRS
-    ${CMAKE_SOURCE_DIR}/3rd_party/glfw/include
+    ${CMAKE_SOURCE_DIR}/3rdparty/glfw/include
 )
 find_path(GLFW3_INCLUDE_DIR NAMES GLFW/glfw3.h
     PATHS ${GLFW3_HEADER_SEARCH_DIRS})
 
 # search for the library
 set(GLFW3_LIB_SEARCH_DIRS
-    ${CMAKE_SOURCE_DIR}/3rd_party/glfw/build/src
+    ${CMAKE_SOURCE_DIR}/3rdparty/glfw/build/src
 )
 find_library(GLFW3_LIBRARY NAMES glfw3 glfw 
     PATHS ${GLFW3_LIB_SEARCH_DIRS})
