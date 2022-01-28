@@ -20,9 +20,9 @@ set(ASSIMP_INCLUDE_DIR
 
 # search for the library
 set(ASSIMP_LIB_SEARCH_DIRS
-    ${CMAKE_SOURCE_DIR}/3rd_party/assimp/build/bin
+    ${CMAKE_SOURCE_DIR}/3rdparty/assimp/build/lib
 )
-find_library(ASSIMP_LIBRARY NAMES assimp 
+find_library(ASSIMP_LIBRARY NAMES assimp
     PATHS ${ASSIMP_LIB_SEARCH_DIRS})
 
 # set ASSIMP package

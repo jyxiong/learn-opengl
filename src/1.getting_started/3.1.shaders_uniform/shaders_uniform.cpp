@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -100,7 +100,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         
         // update uniform
-        float timeValue = glfwGetTime();
+        auto timeValue = static_cast<float>(glfwGetTime());
         float greenValue = sin(timeValue) / 2.0f + 0.5f;
         int location = glGetUniformLocation(shaderProgram, "vertexColor");
         glUniform4f(location, 0.0f, greenValue, 0.0f, 1.0f);
