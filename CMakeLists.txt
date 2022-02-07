@@ -57,3 +57,4 @@ set(APPLE_LIBRARIES ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${OpenGL_LIBRARY} ${CoreVi
 
 # add subdirectory
 add_subdirectory(src/1.getting_started)
+add_subdirectory(src/6.pbr)
