@@ -1,5 +1,5 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "glad/gl.h"
+#include "GLFW/glfw3.h"
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -34,9 +34,10 @@ int main()
     glfwMakeContextCurrent(window);
     
     // load functions
-    if (!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))
+    int version = gladLoadGL(glfwGetProcAddress);
+    if (version == 0)
     {
-        std::cout << "Failed to load functions!" << std::endl;
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
         return -1;
     }
     

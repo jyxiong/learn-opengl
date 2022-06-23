@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
@@ -13,9 +13,9 @@
 
 #include <iostream>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 unsigned int loadTexture(const char *path);
 
@@ -25,8 +25,8 @@ const unsigned int SCR_HEIGHT = 600;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = (float)SCR_WIDTH / 2.0;
-float lastY = (float)SCR_HEIGHT / 2.0;
+float lastX = (float) SCR_WIDTH / 2.0;
+float lastY = (float) SCR_HEIGHT / 2.0;
 bool firstMouse = true;
 
 // timing
@@ -48,7 +48,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -65,9 +65,10 @@ int main()
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    int version = gladLoadGL(glfwGetProcAddress);
+    if (version == 0)
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
         return -1;
     }
 
@@ -75,75 +76,76 @@ int main()
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
-     // build and compile shaders
+    // build and compile shaders
     // -------------------------
-    Shader shader("3.1.blending.vs", "3.1.blending.fs");
+    std::string path = std::string(logl_root) + "/src/4.advanced_opengl/3.1.blending_discard/";
+    Shader shader(path + "3.1.blending.vs", path + "3.1.blending.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float cubeVertices[] = {
         // positions          // texture Coords
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+        0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+        -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
     };
     float planeVertices[] = {
         // positions          // texture Coords 
-         5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
-        -5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
-        -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
+        5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
+        -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
+        -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
 
-         5.0f, -0.5f,  5.0f,  2.0f, 0.0f,
-        -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
-         5.0f, -0.5f, -5.0f,  2.0f, 2.0f
+        5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
+        -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
+        5.0f, -0.5f, -5.0f, 2.0f, 2.0f
     };
     float transparentVertices[] = {
         // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
-        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-        0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
-        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+        0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+        0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
+        1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
 
-        0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-        1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-        1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+        0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+        1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+        1.0f, 0.5f, 0.0f, 1.0f, 0.0f
     };
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
@@ -153,9 +155,9 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     // plane VAO
     unsigned int planeVAO, planeVBO;
     glGenVertexArrays(1, &planeVAO);
@@ -164,9 +166,9 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     // transparent VAO
     unsigned int transparentVAO, transparentVBO;
     glGenVertexArrays(1, &transparentVAO);
@@ -175,27 +177,27 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     glBindVertexArray(0);
 
     // load textures
     // -------------
-    unsigned int cubeTexture = loadTexture(FileSystem::getPath("resources/textures/marble.jpg").c_str());
+    unsigned int cubeTexture = loadTexture(FileSystem::getPath("resources/textures/metal.png").c_str());
     unsigned int floorTexture = loadTexture(FileSystem::getPath("resources/textures/metal.png").c_str());
     unsigned int transparentTexture = loadTexture(FileSystem::getPath("resources/textures/grass.png").c_str());
 
     // transparent vegetation locations
     // --------------------------------
-    vector<glm::vec3> vegetation 
-    {
-        glm::vec3(-1.5f, 0.0f, -0.48f),
-        glm::vec3( 1.5f, 0.0f, 0.51f),
-        glm::vec3( 0.0f, 0.0f, 0.7f),
-        glm::vec3(-0.3f, 0.0f, -2.3f),
-        glm::vec3 (0.5f, 0.0f, -0.6f)
-    };
+    vector<glm::vec3> vegetation
+        {
+            glm::vec3(-1.5f, 0.0f, -0.48f),
+            glm::vec3(1.5f, 0.0f, 0.51f),
+            glm::vec3(0.0f, 0.0f, 0.7f),
+            glm::vec3(-0.3f, 0.0f, -2.3f),
+            glm::vec3(0.5f, 0.0f, -0.6f)
+        };
 
     // shader configuration
     // --------------------
@@ -223,7 +225,8 @@ int main()
 
         // draw objects
         shader.use();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection =
+            glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 model = glm::mat4(1.0f);
         shader.setMat4("projection", projection);
@@ -293,7 +296,7 @@ void processInput(GLFWwindow *window)
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
@@ -302,7 +305,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
     if (firstMouse)
     {
@@ -322,14 +325,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(yoffset);
 }
 
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
-unsigned int loadTexture(char const * path)
+unsigned int loadTexture(char const *path)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -350,14 +353,16 @@ unsigned int loadTexture(char const * path)
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_WRAP_S,
+                        format == GL_RGBA ? GL_CLAMP_TO_EDGE
+                                          : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         stbi_image_free(data);
-    }
-    else
+    } else
     {
         std::cout << "Texture failed to load at path: " << path << std::endl;
         stbi_image_free(data);

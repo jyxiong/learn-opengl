@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
@@ -71,9 +71,10 @@ int main()
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    int version = gladLoadGL(glfwGetProcAddress);
+    if (version == 0)
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
         return -1;
     }
 
@@ -83,9 +84,10 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader shader("3.1.2.shadow_mapping.vs", "3.1.2.shadow_mapping.fs");
-    Shader simpleDepthShader("3.1.2.shadow_mapping_depth.vs", "3.1.2.shadow_mapping_depth.fs");
-    Shader debugDepthQuad("3.1.2.debug_quad.vs", "3.1.2.debug_quad_depth.fs");
+    std::string path = std::string(logl_root) + "/src/5.advanced_lighting/3.1.2.shadow_mapping_base/";
+    Shader shader(path + "3.1.2.shadow_mapping.vs", path + "3.1.2.shadow_mapping.fs");
+    Shader simpleDepthShader(path + "3.1.2.shadow_mapping_depth.vs", path + "3.1.2.shadow_mapping_depth.fs");
+    Shader debugDepthQuad(path + "3.1.2.debug_quad.vs", path + "3.1.2.debug_quad_depth.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
