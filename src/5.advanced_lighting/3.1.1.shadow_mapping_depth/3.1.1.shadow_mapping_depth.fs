@@ -1,9 +1,9 @@
 #version 330 core
 
-in vec2 TexCoords;
-
-uniform sampler2D diffuseMap;
-uniform float transparentFactor;
+//in vec2 TexCoords;
+//
+//uniform sampler2D diffuseMap;
+//uniform float transparentFactor;
 
 float bayerDither2(vec2 _P) {
     return mod(2.0 * _P.y + _P.x + 1.0, 4.0);
@@ -24,8 +24,8 @@ float bayerDither8(vec2 _P) {
 
 void main()
 {
-    float alpha = texture2D(diffuseMap, vTexcoord).a;
-    if ((bayerDither8(floor(mod(gl_FragCoord.xy, 8.0)))) / 64.0 >= transparentFactor * alpha)
-        discard;
+//    float alpha = texture2D(diffuseMap, vTexcoord).a;
+//    if ((bayerDither8(floor(mod(gl_FragCoord.xy, 8.0)))) / 64.0 >= transparentFactor * alpha)
+//        discard;
     // gl_FragDepth = gl_FragCoord.z;
 }

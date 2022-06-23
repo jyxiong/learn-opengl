@@ -27,6 +27,8 @@ void renderScene(const Shader &shader);
 
 void renderCube();
 
+void renderTransparent();
+
 void renderQuad();
 
 // settings
@@ -45,6 +47,15 @@ float lastFrame = 0.0f;
 
 // meshes
 unsigned int planeVAO;
+
+std::vector<glm::vec3> vegetationVec
+    {
+        glm::vec3(-1.5f, 0.0f, -0.48f),
+        glm::vec3(1.5f, 0.0f, 0.51f),
+        glm::vec3(0.0f, 0.0f, 0.7f),
+        glm::vec3(-0.3f, 0.0f, -2.3f),
+        glm::vec3(0.5f, 0.0f, -0.6f)
+    };
 
 int main()
 {
@@ -126,6 +137,7 @@ int main()
     // load textures
     // -------------
     unsigned int woodTexture = loadTexture(FileSystem::getPath("resources/textures/grass.png").c_str());
+    unsigned int transparentTexture = loadTexture(FileSystem::getPath("resources/textures/grass.png").c_str());
 
     // configure depth map FBO
     // -----------------------
@@ -190,7 +202,7 @@ int main()
         simpleDepthShader.use();
         simpleDepthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
         simpleDepthShader.setFloat("transparentFactor", 1.0);
-        simpleDepthShader.setInt("diffuseMap", 0);
+//        simpleDepthShader.setInt("diffuseMap", 0);
 
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -237,6 +249,7 @@ void renderScene(const Shader &shader)
     shader.setMat4("model", model);
     glBindVertexArray(planeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+
     // cubes
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
@@ -254,6 +267,15 @@ void renderScene(const Shader &shader)
     model = glm::scale(model, glm::vec3(0.25));
     shader.setMat4("model", model);
     renderCube();
+
+    // vegetationVec
+    for (auto & vegetation : vegetationVec)
+    {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, vegetation);
+        shader.setMat4("model", model);
+        renderTransparent();
+    }
 }
 
 // renderCube() renders a 1x1 3D cube in NDC.
@@ -329,6 +351,40 @@ void renderCube()
     // render Cube
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+// renderTransparent() renders
+// -----------------------------------------
+unsigned int transparentVAO;
+unsigned int transparentVBO;
+
+void renderTransparent()
+{
+    if (transparentVAO == 0)
+    {
+        float transparentVertices[] = {
+            // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+            0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
+            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.5f, 0.0f, 1.0f, 0.0f
+        };
+
+        glGenVertexArrays(1, &transparentVAO);
+        glGenBuffers(1, &transparentVBO);
+        glBindVertexArray(transparentVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), &transparentVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) nullptr);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    }
+    glBindVertexArray(transparentVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
 
