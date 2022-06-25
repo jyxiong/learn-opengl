@@ -42,11 +42,11 @@ unsigned int planeVAO;
 
 std::vector<glm::vec3> vegetationVec
     {
-        glm::vec3(-1.5f, 0.0f, -0.48f),
-        glm::vec3(1.5f, 0.0f, 0.51f),
+//        glm::vec3(-1.5f, 0.0f, -0.48f),
+//        glm::vec3(1.5f, 0.0f, 0.51f),
         glm::vec3(0.0f, 0.0f, 0.7f),
-        glm::vec3(-0.3f, 0.0f, -2.3f),
-        glm::vec3(0.5f, 0.0f, -0.6f)
+//        glm::vec3(-0.3f, 0.0f, -2.3f),
+//        glm::vec3(0.5f, 0.0f, -0.6f)
     };
 
 int main()
@@ -227,6 +227,7 @@ int main()
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, vegetation);
+            model = glm::scale(model, glm::vec3(0.5f));
             shader.setMat4("model", model);
             renderTransparent();
         }
@@ -257,13 +258,14 @@ int main()
         glBindTexture(GL_TEXTURE_2D, depthMap);
         renderScene(shader);
 
+        // vegetationVec
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, transparentTexture);
-        // vegetationVec
         for (auto &vegetation : vegetationVec)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, vegetation);
+            model = glm::scale(model, glm::vec3(0.5f));
             shader.setMat4("model", model);
             renderTransparent();
         }
@@ -275,7 +277,7 @@ int main()
         debugDepthQuad.setFloat("far_plane", far_plane);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, depthMap);
-        //renderQuad();
+//        renderQuad();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -302,22 +304,30 @@ void renderScene(const Shader &shader)
     glBindVertexArray(planeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     // cubes
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
-    model = glm::scale(model, glm::vec3(0.5f));
-    shader.setMat4("model", model);
-    renderCube();
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
-    model = glm::scale(model, glm::vec3(0.5f));
-    shader.setMat4("model", model);
-    renderCube();
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
-    model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-    model = glm::scale(model, glm::vec3(0.25));
-    shader.setMat4("model", model);
-    renderCube();
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
+//    model = glm::scale(model, glm::vec3(0.5f));
+//    shader.setMat4("model", model);
+//    renderCube();
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
+//    model = glm::scale(model, glm::vec3(0.5f));
+//    shader.setMat4("model", model);
+//    renderCube();
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
+//    model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+//    model = glm::scale(model, glm::vec3(0.25));
+//    shader.setMat4("model", model);
+//    renderCube();
+//
+//    for (auto &vegetation : vegetationVec)
+//    {
+//        glm::mat4 model = glm::mat4(1.0f);
+//        model = glm::translate(model, vegetation);
+//        shader.setMat4("model", model);
+//        renderTransparent();
+//    }
 }
 
 // renderCube() renders a 1x1 3D cube in NDC.
@@ -381,7 +391,7 @@ void renderCube()
         // link vertex attributes
         glBindVertexArray(cubeVAO);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) nullptr);
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
         glEnableVertexAttribArray(2);
@@ -406,13 +416,12 @@ void renderTransparent()
     {
         float transparentVertices[] = {
             // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
-            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
-            0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
-            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
-
-            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
-            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.5f, 0.0f, 1.0f, 0.0f
+            -1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
+            1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+            1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
+            1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+            -1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
+            -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f  // bottom-left
         };
 
         glGenVertexArrays(1, &transparentVAO);
@@ -421,9 +430,13 @@ void renderTransparent()
         glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), &transparentVertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) nullptr);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) nullptr);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
     }
     glBindVertexArray(transparentVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
